@@ -9,7 +9,6 @@ import com.hg.sideproject.response.Response;
 import com.hg.sideproject.service.PostService;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.web.PageableDefault;
@@ -38,11 +37,9 @@ public class PostController {
         @RequestParam(required = false, defaultValue = "") String title,
         @PageableDefault(sort = "created", direction = Direction.DESC) Pageable page
     ) {
-        Page<PostRepresentation.GetPosts.Post> posts = postService.pagePosts(title, page);
-
         return new Response<>(
             PostRepresentation.GetPosts.builder()
-                .posts(posts)
+                .posts(postService.pagePosts(title, page))
                 .build()
         );
     }
@@ -53,11 +50,9 @@ public class PostController {
     @PostMapping("")
     public Response<PostRepresentation.Create> createPost(
         @RequestBody @Valid PostCommand.Create command) {
-        PostRepresentation.Create.Post post = postService.createPost(command);
-
         return new Response<>(
             PostRepresentation.Create.builder()
-                .post(post)
+                .post(postService.createPost(command))
                 .build()
         );
     }
@@ -68,10 +63,9 @@ public class PostController {
     @PutMapping("/{postId}")
     public Response<PostRepresentation.Create> updatePost(@PathVariable Long postId,
         @RequestBody @Valid PostCommand.Create command) throws Exception {
-        PostRepresentation.Create.Post post = postService.updatePost(postId, command);
         return new Response<>(
             PostRepresentation.Create.builder()
-                .post(post)
+                .post(postService.updatePost(postId, command))
                 .build()
         );
     }
@@ -82,8 +76,7 @@ public class PostController {
     @GetMapping("/{postId}")
     public Response<PostRepresentation.GetPost> getPost(@PathVariable Long postId)
         throws Exception {
-        PostRepresentation.GetPost post = postService.getPost(postId);
-        return new Response<>(post);
+        return new Response<>(postService.getPost(postId));
     }
 
     /**

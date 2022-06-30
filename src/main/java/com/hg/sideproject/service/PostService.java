@@ -25,30 +25,30 @@ public class PostService {
 
     @Transactional
     public PostRepresentation.Create.Post createPost(PostCommand.Create command) {
-        Post post = new Post(command.getTitle(), command.getContent());
-        Post saved = postRepository.save(post);
+        final Post post = new Post(command.getTitle(), command.getContent());
+        final Post saved = postRepository.save(post);
         return PostRepresentation.Create.Post.from(saved);
     }
 
     @Transactional
-    public PostRepresentation.Create.Post updatePost(Long postId, PostCommand.Create command)
-        throws Exception {
-        Post post = postRepository.findById(postId)
+    public PostRepresentation.Create.Post updatePost(Long postId, PostCommand.Create command) {
+        final Post post = postRepository.findById(postId)
             .orElseThrow(() -> new IllegalArgumentException("post not exists"));
         post.updatePost(command.getTitle(), command.getContent());
         Post saved = postRepository.save(post);
         return PostRepresentation.Create.Post.from(saved);
     }
 
-    public PostRepresentation.GetPost getPost(Long postId) throws Exception {
-        Post post = postRepository.findById(postId)
+    public PostRepresentation.GetPost getPost(Long postId) {
+        final Post post = postRepository.findById(postId)
             .orElseThrow(() -> new IllegalArgumentException("post not exists"));
         return PostRepresentation.GetPost.from(post);
     }
 
     @Transactional
     public void deletePost(Long postId) {
-        Post post = postRepository.findById(postId).orElseThrow(IllegalArgumentException::new);
+        final Post post = postRepository.findById(postId)
+            .orElseThrow(() -> new IllegalArgumentException("post not exists"));
         post.deletePost();
         postRepository.save(post);
     }
